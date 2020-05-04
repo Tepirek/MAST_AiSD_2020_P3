@@ -248,6 +248,7 @@ class HashMap {
     int secondSize;
     Node** firstValues;
     Node** secondValues;
+    int solution;
 public:
     HashMap(GeneralTree* first, GeneralTree* second) {
         this->first = first;
@@ -255,7 +256,7 @@ public:
         this->firstSize = first->getAmountOfLeaves() + first->getAmountOfInnerNodes();
         this->secondSize = second->getAmountOfLeaves() + second->getAmountOfInnerNodes();
         this->table = new int* [this->firstSize];
-        for (int i = 0; i < this->secondSize; i++) {
+        for (int i = 0; i < this->firstSize; i++) {
             this->table[i] = new int[this->secondSize];
         }
         this->firstValues = new Node*[this->firstSize];
@@ -268,15 +269,21 @@ public:
             if (i < this->second->getAmountOfLeaves()) secondValues[i] = this->second->getLeaves()[i];
             else secondValues[i] = this->second->getInnerNodes()[i - this->second->getAmountOfLeaves()];
         }
+        this->solution = 0;
     }
     ~HashMap() {
 
+    }
+    int getSolution() {
+        return this->first->getAmountOfLeaves() - this->solution;
     }
     void prepareTable() {
         for (int i = 0; i < this->firstSize; i++) {
             for (int j = 0; j < this->secondSize; j++) {
                 this->table[i][j] = 0;
+                // printf("%d ", this->table[i][j]);
             }
+            // printf("\n");
         }
     }
     void handleLeaves() {
@@ -303,18 +310,61 @@ public:
         for (int i = this->firstSize - 1; i >= this->first->getAmountOfLeaves(); i--) {
             for (int j = this->secondSize - 1; j >= this->second->getAmountOfLeaves(); j--) {
                 // this->table[i][j] = 4;
-                int case1 = compareChildrenWithNode(this->firstValues[i], this->secondValues[j]);
-                int case2 = compareChildrenWithNode(this->secondValues[j], this->firstValues[i]);
+                // printf("Comparing %d with %d\n", this->firstValues[i]->getValue(), this->secondValues[j]->getValue());
+                int case1 = compareChildrenWithNode1(this->firstValues[i], this->secondValues[j]);
+                int case2 = compareChildrenWithNode2(this->secondValues[j], this->firstValues[i]);
                 int case3 = compareChildren(this->firstValues[i], this->secondValues[j]);
+                case3 *= -1;
+                // printf("%d %d %d\n", case1, case2, case3);
                 this->table[i][j] = maxOfThree(case1, case2, case3);
+                if (this->solution < this->table[i][j]) this->solution = this->table[i][j];
+                // this->printTable();
+                // printf("\n");
             }
         }
     }
-    int compareChildrenWithNode(Node* a, Node* b) {
+    int compareChildrenWithNode1(Node* a, Node* b) {
         int max = 0;
         int value = 0;
+        int i_a, j_b;
+        for (int i = 0; i < secondSize; i++) {
+            if (b == secondValues[i]) {
+                j_b = i; break;
+            }
+        }
         for (int i = 0; i < a->getAmountOfChildren(); i++) {
-            value = getValueAt(a->getChildren()[i]->getValue(), b->getValue());
+            Node* firstChild = a->getChildren()[i];
+            // printf("%d %d\n", firstChild->getValue(), b->getValue());
+            for (int i = 0; i < firstSize; i++) {
+                if (firstChild == firstValues[i]) {
+                    i_a = i; break;
+                }
+            }
+            value = table[i_a][j_b];
+            // printf("\tComparing %d with %d = %d\n", a->getChildren()[i]->getValue(), b->getValue(), value);
+            if (value > max) max = value;
+        }
+        return max;
+    }
+    int compareChildrenWithNode2(Node* a, Node* b) {
+        int max = 0;
+        int value = 0;
+        int i_a, j_b;
+        for (int i = 0; i < firstSize; i++) {
+            if (b == firstValues[i]) {
+                i_a = i; break;
+            }
+        }
+        for (int i = 0; i < a->getAmountOfChildren(); i++) {
+            Node* firstChild = a->getChildren()[i];
+            // printf("%d %d\n", firstChild->getValue(), b->getValue());
+            for (int i = 0; i < secondSize; i++) {
+                if (firstChild == secondValues[i]) {
+                    j_b = i; break;
+                }
+            }
+            value = table[i_a][j_b];
+            // printf("\tComparing %d with %d = %d\n", a->getChildren()[i]->getValue(), b->getValue(), value);
             if (value > max) max = value;
         }
         return max;
@@ -328,11 +378,39 @@ public:
         }
         for (int i = 0; i < a->getAmountOfChildren(); i++) {
             for (int j = 0; j < b->getAmountOfChildren(); j++) {
-                // tmpTable[i][j] = getValueAt(a->getChildren[i]->getValue(), b->getChildren()[j]->getValue());
+                tmpTable[i][j] = getValueAt(a->getChildren()[i]->getValue(), b->getChildren()[j]->getValue(), false);
             }
         }
+        /*
+        for (int i = 0; i < a->getAmountOfChildren(); i++) {
+            for (int j = 0; j < b->getAmountOfChildren(); j++) {
+                // printf("\tComparing %d with %d\n", a->getChildren()[i]->getValue(), b->getChildren()[j]->getValue());
+                printf("%d ", tmpTable[i][j]);
+            }
+            printf("\n");
+        }
+        */
+        vector<vector<double>> costMatrix(a->getAmountOfChildren(), vector<double>(b->getAmountOfChildren()));
+        for (int i = 0; i < a->getAmountOfChildren(); i++) {
+            for (int j = 0; j < b->getAmountOfChildren(); j++) {
+                costMatrix[i][j] = getValueAt(a->getChildren()[i]->getValue(), b->getChildren()[j]->getValue(), false);
+            }
+        }
+        for (int i = 0; i < a->getAmountOfChildren(); i++) {
+            for (int j = 0; j < b->getAmountOfChildren(); j++) {
+                costMatrix[i][j] *= -1;
+            }
+        }
+        HungarianAlgorithm* h = new HungarianAlgorithm();
+        vector<int> assignment;
+        double cost = h->Solve(costMatrix, assignment);
+        
+        // for (unsigned int x = 0; x < costMatrix.size(); x++)
+            // std::cout << x << "," << assignment[x] << "\t";
 
-        return 0;
+        // std::cout << "\ncost: " << cost * -1 << std::endl;
+
+        return (int) cost;
     }
     int maxOfThree(int a, int b, int c) {
         int max = a;
@@ -340,18 +418,34 @@ public:
         if (max < c) max = c;
         return max;
     }
-    int getValueAt(int a, int b) {
+    int getValueAt(int a, int b, bool c) {
         int i_a = 0, j_b = 0;
-        for (int i = 0; i < this->firstSize; i++) {
-            if (this->firstValues[i]->getValue() == a) {
-                i_a = i;
-                break;
+        if (c) {
+            for (int i = 0; i < this->firstSize; i++) {
+                if (this->secondValues[i]->getValue() == a) {
+                    i_a = i;
+                    break;
+                }
+            }
+            for (int j = 0; j < this->secondSize; j++) {
+                if (this->firstValues[j]->getValue() == b) {
+                    j_b = j;
+                    break;
+                }
             }
         }
-        for (int j = 0; j < this->secondSize; j++) {
-            if (this->secondValues[j]->getValue() == b) {
-                j_b = j;
-                break;
+        else {
+            for (int i = 0; i < this->firstSize; i++) {
+                if (this->firstValues[i]->getValue() == a) {
+                    i_a = i;
+                    break;
+                }
+            }
+            for (int j = 0; j < this->secondSize; j++) {
+                if (this->secondValues[j]->getValue() == b) {
+                    j_b = j;
+                    break;
+                }
             }
         }
         // printf("Value = %d\n", this->table[i_a][j_b]);
@@ -405,19 +499,37 @@ int main(void) {
             // h->printTable();
             // printf("\n");
             h->handleLeaves();
-            h->printTable();
-            printf("\n");
+            // h->printTable();
+            // printf("\n");
             h->handleInnerNodes();
-            h->printTable();
+            // h->printTable();
+            printf("%d\n", h->getSolution());
         }
     }
-
     return 0;
 }
 
 /*
 
+Input:
+2
 (4,(8,1,(5,3)),(9,2,(10,(7,6))));
 (10,(8,(9,(5,4)),(6,2,3)),(7,1));
+Output:
+6
+
+Input:
+4
+(1,5,(10,6,3),(2,(8,7)),(9,4));
+((7,(3,(4,9,(1,2)))),8,(5,(10,6)));
+(7,((6,(9,5),(8,3)),(1,(2,10,4))));
+(7,(8,3,4,6,1),(9,5,10),2);
+Output:
+5
+7
+6
+6
+6
+6
 
 */
