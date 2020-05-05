@@ -1,7 +1,6 @@
 #include "HashMap.h"
-#include <stdio.h>
 #include "HungarianAlgorithm.h"
-#include "AdditionalAlgorithm.h"
+// #include "AdditionalAlgorithm.h"
 
 int HashMap::getValueAt(int a, int b) const {
     int i_a = 0;
@@ -52,48 +51,44 @@ int HashMap::compareChildrenWithNode1(Node* a, Node* b) const {
 }
 
 int HashMap::compareChildrenWithNode2(Node* a, Node* b) const {
-	int max = 0;
-	int i_a = 0;
-	int j_b = 0;
-	for (int i = 0; i < firstTreeSize; i++) {
-		if (b == firstTreeValues[i]) {
-			i_a = i;
-			break;
-		}
-	}
-	for (int i = 0; i < a->getAmountOfChildren(); i++) {
+    int max = 0;
+    int i_a = 0;
+    int j_b = 0;
+    for (int i = 0; i < firstTreeSize; i++) {
+        if (b == firstTreeValues[i]) {
+            i_a = i;
+            break;
+        }
+    }
+    for (int i = 0; i < a->getAmountOfChildren(); i++) {
         int value = 0;
-		Node* firstChild = a->getChildren()[i];
-		for (int j = 0; j < secondTreeSize; j++) {
-			if (firstChild == secondTreeValues[j]) {
-				j_b = j;
-				break;
-			}
-		}
-		value = table[i_a][j_b];
-		if (value > max) max = value;
-	}
-	return max;
+        Node* firstChild = a->getChildren()[i];
+        for (int j = 0; j < secondTreeSize; j++) {
+            if (firstChild == secondTreeValues[j]) {
+                j_b = j;
+                break;
+            }
+        }
+        value = table[i_a][j_b];
+        if (value > max) max = value;
+    }
+    return max;
 }
 
 int HashMap::compareChildren(Node* a, Node* b) const {
-	/*
-    vector<vector<double>> costMatrix(a->getAmountOfChildren(), vector<double>(b->getAmountOfChildren()));
+    int** tmpTable = new int * [a->getAmountOfChildren()];
+	for(int i = 0; i < a->getAmountOfChildren(); i++) {
+        tmpTable[i] = new int[b->getAmountOfChildren()];
+	}
     for (int i = 0; i < a->getAmountOfChildren(); i++) {
         for (int j = 0; j < b->getAmountOfChildren(); j++) {
-            costMatrix[i][j] = getValueAt(a->getChildren()[i]->getValue(), b->getChildren()[j]->getValue());
-        }
-    }
-    for (int i = 0; i < a->getAmountOfChildren(); i++) {
-        for (int j = 0; j < b->getAmountOfChildren(); j++) {
-            costMatrix[i][j] *= -1;
+            tmpTable[i][j] = getValueAt(a->getChildren()[i]->getValue(), b->getChildren()[j]->getValue());
         }
     }
     HungarianAlgorithm* h = new HungarianAlgorithm();
-    vector<int> assignment;
-    double cost = h->Solve(costMatrix, assignment);
-    return static_cast<int>(cost);
-    */
+    int result = h->Solve(tmpTable, a->getAmountOfChildren(), b->getAmountOfChildren(), true);
+    return result;
+	/*
     int rows = a->getAmountOfChildren();
     int columns = b->getAmountOfChildren();
     int** tmpTable = new int* [rows];
@@ -108,6 +103,7 @@ int HashMap::compareChildren(Node* a, Node* b) const {
     AdditionalAlgorithm* ad = new AdditionalAlgorithm(a, b, tmpTable);
     int result = ad->findMaxSum();
     return result;
+    */
 }
 
 HashMap::HashMap(GeneralTree* firstTree, GeneralTree* secondTree) {
@@ -171,7 +167,6 @@ void HashMap::handleInnerNodes() {
 	        const int case1 = compareChildrenWithNode1(this->firstTreeValues[i], this->secondTreeValues[j]);
 	        const int case2 = compareChildrenWithNode2(this->secondTreeValues[j], this->firstTreeValues[i]);
             int case3 = compareChildren(this->firstTreeValues[i], this->secondTreeValues[j]);
-            // case3 *= -1;
             this->table[i][j] = maxOfThree(case1, case2, case3);
             if (this->solution < this->table[i][j]) this->solution = this->table[i][j];
         }

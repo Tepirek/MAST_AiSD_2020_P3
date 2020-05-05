@@ -105,7 +105,7 @@ void GeneralTree::parseInput() {
                 position++;
                 c = this->input[position];
             }
-            sscanf_s(number, "%hd", &intNumber);
+            sscanf_s(number, "%d", &intNumber);
             currentNode->setValue(intNumber);
             this->leaves[amountOfLeaves] = currentNode;
             this->amountOfLeaves++;

@@ -13,7 +13,7 @@ Node::~Node() {
 	delete this->parent;
 	delete this->child;
 	delete this->sibling;
-	delete[] this->children;
+	delete this->children;
 }
 
 int Node::getValue() const {
