@@ -2,24 +2,23 @@
 #include "GeneralTree.h"
 
 class HashMap {
-	unsigned int** table;
+	short** table;
 	GeneralTree* firstTree;
 	GeneralTree* secondTree;
-	unsigned int firstTreeSize;
-	unsigned int secondTreeSize;
+	short firstTreeSize;
+	short secondTreeSize;
 	Node** firstTreeValues;
 	Node** secondTreeValues;
-	unsigned int solution;
-	unsigned int getValueAt(unsigned int a, unsigned int b);
-	unsigned int maxOfThree(unsigned int a, unsigned int b, unsigned int c);
-	unsigned int compareChildrenWithNode1(Node* a, Node* b);
-	unsigned int compareChildrenWithNode2(Node* a, Node* b);
-	unsigned int compareChildren(Node* a, Node* b);
+	short solution;
+	short getValueAt(short a, short b) const;
+	static short maxOfThree(short a, short b, short c);
+	short compareChildrenWithNode1(Node* a, Node* b) const;
+	short compareChildrenWithNode2(Node* a, Node* b) const;
+	short compareChildren(Node* a, Node* b) const;
 public:
 	HashMap(GeneralTree* firstTree, GeneralTree* secondTree);
 	~HashMap();
-	unsigned int getSolution();
-	void handleLeaves();
+	short getSolution() const;
+	void handleLeaves() const;
 	void handleInnerNodes();
-	void printTable();
 };

@@ -1,5 +1,7 @@
-#include <stdio.h>
+#define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
+#include <crtdbg.h>
+#include <stdio.h>
 #include "GeneralTree.h"
 #include "HashMap.h"
 
@@ -9,7 +11,10 @@ int main(void) {
     GeneralTree** trees = new GeneralTree * [numberOfTrees];
     for (int i = 0; i < numberOfTrees; i++) {
         GeneralTree* gt = new GeneralTree();
-        gt->getInput();
+		gt->getInput();
+    	if(i < numberOfTrees - 1) {
+            char c; while ((c = getchar()) != '\n');
+    	}
         gt->parseInput();
         gt->assignChildren();
         trees[i] = gt;
@@ -20,9 +25,11 @@ int main(void) {
             HashMap* h = new HashMap(trees[i], trees[j]);
             h->handleLeaves();
             h->handleInnerNodes();
-            printf("%d\n", h->getSolution());
+			printf("%hd\n", h->getSolution());
         }
     }
+    delete[] trees;
+    _CrtDumpMemoryLeaks();
     return 0;
 }
 

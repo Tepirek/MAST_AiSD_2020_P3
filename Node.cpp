@@ -16,48 +16,48 @@ Node::~Node() {
 	delete[] this->children;
 }
 
-unsigned int Node::getValue() {
+short Node::getValue() const {
 	return this->value;
 }
 
-Node* Node::getParent() {
+Node* Node::getParent() const {
 	return this->parent;
 }
 
-Node* Node::getChild() {
+Node* Node::getChild() const {
 	return this->child;
 }
 
-Node* Node::getSibling() {
+Node* Node::getSibling() const {
 	return this->sibling;
 }
 
-Node** Node::getChildren() {
+Node** Node::getChildren() const {
 	return this->children;
 }
 
-unsigned int Node::getAmountOfChildren() {
+short Node::getAmountOfChildren() const {
 	return this->amountOfChildren;
 }
 
-void Node::setValue(int value) {
-	this->value = value;
+void Node::setValue(short v) {
+	this->value = v;
 }
 
-void Node::setParent(Node* parent) {
-	this->parent = parent;
+void Node::setParent(Node* p) {
+	this->parent = p;
 }
 
-void Node::setChild(Node* child) {
-	this->child = child;
+void Node::setChild(Node* c) {
+	this->child = c;
 }
 
-void Node::setSibling(Node* sibling) {
-	this->sibling = sibling;
+void Node::setSibling(Node* s) {
+	this->sibling = s;
 }
 
-void Node::setChildren(Node** children) {
-	this->children = children;
+void Node::setChildren(Node** ch) {
+	this->children = ch;
 }
 
 void Node::incrementAmountOfChildren() {
