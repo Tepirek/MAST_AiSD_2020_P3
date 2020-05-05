@@ -29,11 +29,11 @@ Node** GeneralTree::getInnerNodes() const {
     return this->innerNodes;
 }
 
-short GeneralTree::get_amount_of_leaves() const {
+int GeneralTree::get_amount_of_leaves() const {
     return this->amountOfLeaves;
 }
 
-short GeneralTree::getAmountOfInnerNodes() const {
+int GeneralTree::getAmountOfInnerNodes() const {
     return this->amountOfInnerNodes;
 }
 
@@ -62,9 +62,9 @@ void GeneralTree::getInput() {
 
 void GeneralTree::parseInput() {
     this->innerNodes = new Node * [this->amountOfInnerNodes * sizeof(Node*)];
-    short position = 0;
-    short innerNodeFlag = 0;
-    short counter = 0;
+    int position = 0;
+    int innerNodeFlag = 0;
+    int counter = 0;
     char c = this->input[position];
     Node* currentNode = this->root;
     while (c != ';') {
@@ -96,17 +96,17 @@ void GeneralTree::parseInput() {
         }
         else {
             if (currentNode->getParent() != nullptr) currentNode->getParent()->incrementAmountOfChildren();
-            short length = 0;
+            int length = 0;
             char* number = new char[10];
-            short shortNumber;
+            int intNumber;
             while (c != OPENING_BRACKET && c != COMMA && c != CLOSING_BRACKET) {
                 number[length] = c;
                 length++;
                 position++;
                 c = this->input[position];
             }
-            sscanf_s(number, "%hd", &shortNumber);
-            currentNode->setValue(shortNumber);
+            sscanf_s(number, "%hd", &intNumber);
+            currentNode->setValue(intNumber);
             this->leaves[amountOfLeaves] = currentNode;
             this->amountOfLeaves++;
             delete[] number;
@@ -115,7 +115,7 @@ void GeneralTree::parseInput() {
     delete[] this->input;
 }
 
-bool GeneralTree::treeContains(Node* node, short value) {
+bool GeneralTree::treeContains(Node* node, int value) {
     if (node == nullptr) return false;
     if (node->getValue() == value) return true;
     return (treeContains(node->getChild(), value) || treeContains(node->getSibling(), value));
@@ -123,13 +123,13 @@ bool GeneralTree::treeContains(Node* node, short value) {
 
 void GeneralTree::assignChildren() const {
     Node* node;
-    for (short i = 0; i < this->amountOfInnerNodes; i++) {
+    for (int i = 0; i < this->amountOfInnerNodes; i++) {
         node = this->innerNodes[i];
         Node** children = new Node * [node->getAmountOfChildren() * sizeof(Node*)];
         if (node->getChild() == nullptr) return;
         children[0] = node->getChild();
         node = node->getChild();
-        short counter = 1;
+        int counter = 1;
         while (node->getSibling() != nullptr) {
             children[counter] = node->getSibling();
             node = node->getSibling();

@@ -1,6 +1,3 @@
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
 #include <stdio.h>
 #include "GeneralTree.h"
 #include "HashMap.h"
@@ -29,7 +26,6 @@ int main(void) {
         }
     }
     delete[] trees;
-    _CrtDumpMemoryLeaks();
     return 0;
 }
 

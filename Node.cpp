@@ -16,7 +16,7 @@ Node::~Node() {
 	delete[] this->children;
 }
 
-short Node::getValue() const {
+int Node::getValue() const {
 	return this->value;
 }
 
@@ -36,11 +36,11 @@ Node** Node::getChildren() const {
 	return this->children;
 }
 
-short Node::getAmountOfChildren() const {
+int Node::getAmountOfChildren() const {
 	return this->amountOfChildren;
 }
 
-void Node::setValue(short v) {
+void Node::setValue(int v) {
 	this->value = v;
 }
 

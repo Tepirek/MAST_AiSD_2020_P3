@@ -1,21 +1,21 @@
 #pragma once
 class Node {
-	short value;
+	int value;
 	Node* parent;
 	Node* child;
 	Node* sibling;
 	Node** children;
-	short amountOfChildren;
+	int amountOfChildren;
 public:
 	Node();
 	~Node();
-	short getValue() const;
+	int getValue() const;
 	Node* getParent() const;
 	Node* getChild() const;
 	Node* getSibling() const;
 	Node** getChildren() const;
-	short getAmountOfChildren() const;
-	void setValue(short v);
+	int getAmountOfChildren() const;
+	void setValue(int v);
 	void setParent(Node* p);
 	void setChild(Node* c);
 	void setSibling(Node* s);

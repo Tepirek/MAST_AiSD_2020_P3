@@ -5,19 +5,19 @@ class GeneralTree {
 	Node* root;
 	Node** leaves;
 	Node** innerNodes;
-	short amountOfLeaves;
-	short amountOfInnerNodes;
+	int amountOfLeaves;
+	int amountOfInnerNodes;
 	char* input;
 public:
 	GeneralTree();
 	~GeneralTree();
 	Node** getLeaves() const;
 	Node** getInnerNodes() const;
-	short get_amount_of_leaves() const;
-	short getAmountOfInnerNodes() const;
+	int get_amount_of_leaves() const;
+	int getAmountOfInnerNodes() const;
 	void getInput();
 	void parseInput();
-	bool treeContains(Node* node, short value);
+	bool treeContains(Node* node, int value);
 	void assignChildren() const;
 };
 
